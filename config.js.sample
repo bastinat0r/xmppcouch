@@ -1,0 +1,9 @@
+var config = {
+	xmpp : {
+		jid : 'username@example.com',	// jabber-id
+		password : '*******',					// password
+		host : 'example.com',					// host
+		port : 5222										// port
+	}
+}
+module.exports = config
