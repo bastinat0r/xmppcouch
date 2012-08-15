@@ -1,11 +1,16 @@
 var xmpp = require('simple-xmpp');
 var util = require('util');
 var http = require('http');
+var config = require('./config');
 
 var couchOpts = {
 	host: 'localhost',
 	port: '5984',
 }
+
+var srv = http.createServer(function(req){}, function(res){});
+
+srv.listen('localhost', 1337);
 
 function putDB (dbObject) {
 	var opts = couchOpts;
@@ -49,9 +54,5 @@ xmpp.on('error', function(err) {
 	util.puts(error);
 });
 
-xmpp.connect({
-	jid : 'test@bastinat0r.de',
-	password : 'test1234',
-	host : 'bastinat0r.de',
-	port : 5222
-});
+
+xmpp.connect(config.xmpp);
