@@ -8,10 +8,6 @@ var couchOpts = {
 	port: '5984',
 }
 
-var srv = http.createServer(function(req){}, function(res){});
-
-srv.listen('localhost', 1337);
-
 function putDB (dbObject) {
 	var opts = couchOpts;
 	opts.method = 'GET';
@@ -23,6 +19,9 @@ function putDB (dbObject) {
 			opts.path = '/xmpp/'+ uuid;
 			opts.method = 'PUT';
 			var req = http.request(opts, function(res) {
+			req.on('error', function (err) {
+				util.puts(err);
+			});
 			res.on('data', function(data) {
 				util.puts(data);
 				});
@@ -30,6 +29,10 @@ function putDB (dbObject) {
 			req.write(JSON.stringify(dbObject));
 			req.end();	
 		});
+	});
+	req.on('error', function(err) {
+		util.puts(err);
+		util.puts('couchdb up and running?');
 	});
 	req.end();
 };
