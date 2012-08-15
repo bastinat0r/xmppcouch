@@ -6,3 +6,5 @@
 npm install node-stringprep <br>
 npm install node-simple-xmpp
 
+## configuration
+cp config.js.sample config.js # then edit config.js
