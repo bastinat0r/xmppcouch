@@ -2,6 +2,7 @@ var xmpp = require('simple-xmpp');
 var util = require('util');
 var http = require('http');
 var config = require('./config');
+var message_hook = require('./message_hook.js');
 
 function putDB (dbObject) {
 	var opts = config.couch;
@@ -37,6 +38,9 @@ function putDB (dbObject) {
 	req.end();
 };
 
+var srv = http.createServer(function(req, res) {
+});
+
 xmpp.on('online', function() {
 	util.puts('Online');
 });
@@ -48,14 +52,12 @@ xmpp.on('chat', function(from, message) {
 		'time' : new Date()
 	}	
 	util.puts(JSON.stringify(dbObject));
-	xmpp.send(from, 'foo: ' + message);
-
+	message_hook.process(dbObject);	
 	putDB(dbObject);
 });
 
 xmpp.on('error', function(err) {
 	util.puts(error);
 });
-
 
 xmpp.connect(config.xmpp);
