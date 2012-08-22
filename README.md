@@ -7,5 +7,5 @@ npm install node-stringprep <br>
 npm install node-simple-xmpp
 
 ## configuration
-cp config.js.sample config.js # then edit config.js
+cp config.js.sample config.js # then edit config.js <br>
 cp message_hook.js.sample message_hook.js # exampleconfig sending message via prowl
