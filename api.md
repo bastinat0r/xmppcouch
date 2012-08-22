@@ -6,5 +6,6 @@ Antwort: Liste mit Nachrichtenobjekten
 PUT /username@host (escaped)
 Body: Nachricht
 
-## GET /status/username@host (escaped)
+## Status Abfragen: 
+GET /status/username@host (escaped)
 Antwort: Aktueller Status
