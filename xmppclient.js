@@ -3,6 +3,7 @@ var util = require('util');
 var http = require('http');
 var config = require('./config');
 var message_hook = require('./message_hook.js');
+var url = require('url');
 
 function putDB (dbObject) {
 	var opts = config.couch;
@@ -37,10 +38,6 @@ function putDB (dbObject) {
 
 	req.end();
 };
-
-var srv = http.createServer(function(req, res) {
-});
-
 xmpp.on('online', function() {
 	util.puts('Online');
 });
@@ -61,3 +58,23 @@ xmpp.on('error', function(err) {
 });
 
 xmpp.connect(config.xmpp);
+
+var srv = http.createServer(function(req, res) {
+	req.on('error', function(err) {
+		util.puts(err);
+	});
+	req.on('data', function(data) {
+		if(req.method == 'PUT') {
+			if(param.jid) {	// send message
+				var param = url.parse(req.url);
+				xmpp.send(param.jid, data);
+				res.writeHead(200);
+				res.end("OK");
+			};
+		}
+		if(req.method == 'GET') {
+		}
+	});
+});
+srv.listen(6666, 'localhost');
+
