@@ -4,6 +4,7 @@ var http = require('http');
 var config = require('./config');
 var message_hook = require('./message_hook.js');
 var url = require('url');
+var querystring = require('querystring');
 
 function putDB (dbObject) {
 	var opts = config.couch;
@@ -43,6 +44,7 @@ xmpp.on('online', function() {
 });
 
 xmpp.on('chat', function(from, message) {
+	util.puts(from);
 	var dbObject = {
 		'from' : from,
 		'message' : message,
@@ -65,12 +67,14 @@ var srv = http.createServer(function(req, res) {
 	});
 	req.on('data', function(data) {
 		if(req.method == 'PUT') {
-			if(param.jid) {	// send message
-				var param = url.parse(req.url);
-				xmpp.send(param.jid, data);
+				var requrl = url.parse(req.url);
+				util.puts(requrl);
+				var param = querystring.parse(requrl.query);
+				util.puts(param.jid+'@'+param.host);
+				util.puts(data);
+				xmpp.send(param.jid+'@'+param.host, ""+data);
 				res.writeHead(200);
 				res.end("OK");
-			};
 		}
 		if(req.method == 'GET') {
 		}
