@@ -70,8 +70,6 @@ var srv = http.createServer(function(req, res) {
 				var requrl = url.parse(req.url);
 				util.puts(requrl);
 				var param = querystring.parse(requrl.query);
-				util.puts(param.jid+'@'+param.host);
-				util.puts(data);
 				xmpp.send(param.jid+'@'+param.host, ""+data);
 				res.writeHead(200);
 				res.end("OK");
