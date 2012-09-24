@@ -2,7 +2,7 @@ var xmpp = require('simple-xmpp');
 var util = require('util');
 var http = require('http');
 var config = require('./config');
-var message_hook = require('./message_hook.js');
+var message_hook = require('./android_hook.js');
 var url = require('url');
 var querystring = require('querystring');
 
