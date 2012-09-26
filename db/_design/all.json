@@ -2,7 +2,7 @@
 	"_id" : "_design/all",
 	"views" : {	
 		"json" : {
-			"map" : "function (doc) { emit(doc.from, doc); emit(doc.to, doc);}"
+			"map" : "function (doc) { emit(doc.from, doc);}"
 		}
 	}
 }

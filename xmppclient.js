@@ -25,7 +25,7 @@ function putDB (dbObject) {
 			});
 
 			req.on('error', function (err) {
-				util.puts(err);
+				util.puts(JSON.stringify(err));
 			});
 			req.write(JSON.stringify(dbObject));
 			req.end();	
@@ -57,28 +57,32 @@ xmpp.on('chat', function(from, message) {
 });
 
 xmpp.on('error', function(err) {
-	util.puts(error);
+	util.puts(JSON.stringify(error));
 });
 
 xmpp.connect(config.xmpp);
 
 var srv = http.createServer(function(req, res) {
 	req.on('error', function(err) {
-		util.puts(err);
+		util.puts(JSON.stringify(err));
 	});
 	req.on('data', function(data) {
 		if(req.method == 'PUT') {
 				var requrl = url.parse(req.url);
-				util.puts(requrl);
+				util.puts(JSON.stringify(requrl));
+				var param = querystring.parse(requrl.query);
+				
 				var dbObject = {
 					'from' : config.xmpp.jid,
 					'to' : param.jid + '@' + param.host,
-					'message' : data,
+					'message' : ""+data,
 					'time' : new Date()
 				}
 				putDB(dbObject);
-				var param = querystring.parse(requrl.query);
+				util.puts(JSON.stringify(dbObject));	
+				util.puts(""+data);
 				xmpp.send(param.jid+'@'+param.host, ""+data);
+				
 				res.writeHead(200);
 				res.end("OK");
 		}
