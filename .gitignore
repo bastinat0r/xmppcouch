@@ -1,4 +1,4 @@
 *.swp
 node_modules/*
 config.js
-message_hook.js
+prowl_hook.js
