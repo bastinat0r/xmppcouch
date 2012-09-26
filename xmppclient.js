@@ -70,6 +70,13 @@ var srv = http.createServer(function(req, res) {
 		if(req.method == 'PUT') {
 				var requrl = url.parse(req.url);
 				util.puts(requrl);
+				var dbObject = {
+					'from' : config.xmpp.jid,
+					'to' : param.jid + '@' + param.host,
+					'message' : data,
+					'time' : new Date()
+				}
+				putDB(dbObject);
 				var param = querystring.parse(requrl.query);
 				xmpp.send(param.jid+'@'+param.host, ""+data);
 				res.writeHead(200);
