@@ -47,6 +47,7 @@ xmpp.on('chat', function(from, message) {
 	util.puts(from);
 	var dbObject = {
 		'from' : from,
+		'to' : config.xmpp.jid,
 		'message' : message,
 		'time' : new Date()
 	}	
