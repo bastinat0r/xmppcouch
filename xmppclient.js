@@ -39,6 +39,25 @@ function putDB (dbObject) {
 
 	req.end();
 };
+
+function getConversation(jid, cb) {
+	var opts = config.couch;
+	opts.method = 'GET';
+	opts.path = '/xmpp/_design/all/_view/json?' + querystring.stringify({
+		"key" : '"'+jid+'"'
+	});
+	util.puts(opts.path);
+	var conversation = "";
+	var req = http.request(opts, function(res) {
+		res.on('data', function(data) {
+			conversation = conversation + data;
+		});
+		res.on('end', function() {
+			cb(conversation);
+		});
+	});
+	req.end();
+}
 xmpp.on('online', function() {
 	util.puts('Online');
 });
@@ -86,7 +105,16 @@ var srv = http.createServer(function(req, res) {
 				res.writeHead(200);
 				res.end("OK");
 		}
+	});
+	req.on('end', function(){
 		if(req.method == 'GET') {
+			var requrl = url.parse(req.url);
+			util.puts(JSON.stringify(requrl));
+			var param = querystring.parse(requrl.query);
+			getConversation(param.jid+'@'+param.host, function(conversation) {
+				res.writeHead(200);
+				res.end(conversation);
+			});
 		}
 	});
 });

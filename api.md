@@ -1,5 +1,5 @@
 ## Nachrichten Abfragen
-GET /username@host (escaped) [urlparam: letzte Nachricht]
+GET /?jid='username'&host='host'
 Antwort: Liste mit Nachrichtenobjekten
 
 ## Nachrichten Senden:
