@@ -12,5 +12,11 @@ var config = {
 		host : 'localhost'
 		port : '5984'
 	}
+
+	// config for user authentication
+	user : {
+		name : 'username',
+		pass : 'swordfish' // the password is alsways swordfish. Sw0rDf!sH
+	}
 }
 module.exports = config

@@ -5,6 +5,7 @@ var config = require('./config');
 var message_hook = require('./prowl_hook.js');
 var url = require('url');
 var querystring = require('querystring');
+var auth = require('http-auth');
 
 function putDB (dbObject) {
 	var opts = config.couch;
@@ -81,41 +82,49 @@ xmpp.on('error', function(err) {
 
 xmpp.connect(config.xmpp);
 
+var digest = auth({
+	authRealm : 'xmppclient',
+	authList : [config.user.name + ':xmppclient:' + config.user.pass],
+	authType : 'digest',
+});
+
 var srv = http.createServer(function(req, res) {
-	req.on('error', function(err) {
-		util.puts(JSON.stringify(err));
-	});
-	req.on('data', function(data) {
-		if(req.method == 'PUT') {
+	digest.apply(req, res, function(req, res) {	
+		req.on('error', function(err) {
+			util.puts(JSON.stringify(err));
+		});
+		req.on('data', function(data) {
+			if(req.method == 'PUT') {
+					var requrl = url.parse(req.url);
+					util.puts(JSON.stringify(requrl));
+					var param = querystring.parse(requrl.query);
+					
+					var dbObject = {
+						'from' : config.xmpp.jid,
+						'to' : param.jid + '@' + param.host,
+						'message' : ""+data,
+						'time' : new Date()
+					}
+					putDB(dbObject);
+					util.puts(JSON.stringify(dbObject));	
+					util.puts(""+data);
+					xmpp.send(param.jid+'@'+param.host, ""+data);
+					
+					res.writeHead(200);
+					res.end("OK");
+			}
+		});
+		req.on('end', function(){
+			if(req.method == 'GET') {
 				var requrl = url.parse(req.url);
 				util.puts(JSON.stringify(requrl));
 				var param = querystring.parse(requrl.query);
-				
-				var dbObject = {
-					'from' : config.xmpp.jid,
-					'to' : param.jid + '@' + param.host,
-					'message' : ""+data,
-					'time' : new Date()
-				}
-				putDB(dbObject);
-				util.puts(JSON.stringify(dbObject));	
-				util.puts(""+data);
-				xmpp.send(param.jid+'@'+param.host, ""+data);
-				
-				res.writeHead(200);
-				res.end("OK");
-		}
-	});
-	req.on('end', function(){
-		if(req.method == 'GET') {
-			var requrl = url.parse(req.url);
-			util.puts(JSON.stringify(requrl));
-			var param = querystring.parse(requrl.query);
-			getConversation(param.jid+'@'+param.host, function(conversation) {
-				res.writeHead(200);
-				res.end(conversation);
-			});
-		}
+				getConversation(param.jid+'@'+param.host, function(conversation) {
+					res.writeHead(200);
+					res.end(conversation);
+				});
+			}
+		});
 	});
 });
 srv.listen(6666, 'localhost');
