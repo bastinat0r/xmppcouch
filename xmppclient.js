@@ -84,12 +84,12 @@ xmpp.connect(config.xmpp);
 
 var digest = auth({
 	authRealm : 'xmppclient',
-	authList : [config.user.name + ':xmppclient:' + config.user.pass],
-	authType : 'digest',
+	authList : [config.user.name + ':' + config.user.pass],
+//	authType : 'digest',
 });
 
 var srv = http.createServer(function(req, res) {
-	digest.apply(req, res, function(req, res) {	
+	digest.apply(req, res, function() {	
 		req.on('error', function(err) {
 			util.puts(JSON.stringify(err));
 		});
