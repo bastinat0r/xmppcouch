@@ -5,7 +5,7 @@ var config = require('./config');
 var message_hook = require('./prowl_hook.js');
 var url = require('url');
 var querystring = require('querystring');
-var auth = require('http-auth');
+var auth = require('http-digest-auth');
 
 function putDB (dbObject) {
 	var opts = config.couch;
@@ -82,14 +82,17 @@ xmpp.on('error', function(err) {
 
 xmpp.connect(config.xmpp);
 
-var digest = auth({
-	authRealm : 'xmppclient',
-	authList : [config.user.name + ':' + config.user.pass],
-//	authType : 'digest',
-});
+var realm = 'xmpp-API';
+var users = '{"' + config.user.name
+								+ '" : "' + auth.passhash(realm, config.user.name, config.user.pass)
+								+ '"}';
+var users = JSON.parse(users);
 
 var srv = http.createServer(function(req, res) {
-	digest.apply(req, res, function() {	
+	var username = auth.login(req, res, realm, users);
+	if(username === false) {
+		return;
+	}
 		req.on('error', function(err) {
 			util.puts(JSON.stringify(err));
 		});
@@ -125,7 +128,6 @@ var srv = http.createServer(function(req, res) {
 				});
 			}
 		});
-	});
 });
 srv.listen(6666, 'localhost');
 
