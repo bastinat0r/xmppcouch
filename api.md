@@ -7,7 +7,7 @@ PUT /?jid='jid'&host='host'
 Body: Nachricht
 
 ## Status Abfragen: 
-GET /status/username@host (escaped)
+GET /status?jid='username'&host='host'
 Antwort: Aktueller Status
 
 ## Status setzen:
