@@ -76,6 +76,11 @@ xmpp.on('chat', function(from, message) {
 	putDB(dbObject);
 });
 
+xmpp.on('buddy', function(jid, state) {
+	util.puts(jid);
+	util.puts(state);
+});
+
 xmpp.on('error', function(err) {
 	util.puts(JSON.stringify(error));
 });
