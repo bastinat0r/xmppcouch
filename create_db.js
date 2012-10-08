@@ -44,3 +44,6 @@ function putDesign() {
 }
 
 createDB(opts, putDesign);
+
+opts.path = '/status';
+createDB(opts, putDesign);
