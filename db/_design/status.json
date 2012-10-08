@@ -1,5 +1,5 @@
 {	
-	"_id" : "_design/all",
+	"_id" : "_design/status",
 	"views" : {	
 		"json" : {
 			"map" : "function (doc) { emit(null, doc);}"
